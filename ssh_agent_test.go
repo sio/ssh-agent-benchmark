@@ -39,7 +39,7 @@ func BenchmarkSshAgent(b *testing.B) {
 	defer conn.Close()
 	sshAgent := agent.NewClient(conn)
 	for _, bm := range benchmarks {
-		b.Run(fmt.Sprintf("%s/%db", bm.keyfile, bm.msgsize), func(b *testing.B) {
+		b.Run(fmt.Sprintf("%s/%dB", bm.keyfile, bm.msgsize), func(b *testing.B) {
 			pubKeyRaw, err := os.ReadFile(bm.keyfile + ".pub")
 			if err != nil {
 				b.Fatalf("failed to read public key: %v", err)

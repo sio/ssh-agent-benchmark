@@ -7,5 +7,6 @@ bench: load-keys
 
 .PHONY: load-keys
 load-keys:
+	ssh -V
 	chmod go-rwx $(KEYS)
 	ssh-add -t 150 $(KEYS)
