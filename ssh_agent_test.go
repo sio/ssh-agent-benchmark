@@ -46,17 +46,16 @@ func BenchmarkSshAgent(b *testing.B) {
 			if err != nil {
 				b.Fatalf("failed to parse public key: %v", err)
 			}
-
-			msg := make([]byte, bm.msgsize)
-			n, err := rand.Read(msg)
-			if err != nil {
-				b.Fatalf("failed to generate random message: %v", err)
-			}
-			if n != len(msg) {
-				b.Fatalf("random generator returned %d bytes instead of %d", n, len(msg))
-			}
 			for i := 0; i < b.N; i++ {
-				_, err := sshAgent.Sign(pubKey, msg)
+				msg := make([]byte, bm.msgsize)
+				n, err := rand.Read(msg)
+				if err != nil {
+					b.Fatalf("failed to generate random message: %v", err)
+				}
+				if n != len(msg) {
+					b.Fatalf("random generator returned %d bytes instead of %d", n, len(msg))
+				}
+				_, err = sshAgent.Sign(pubKey, msg)
 				if err != nil {
 					b.Fatalf("message signing failed: %v", err)
 				}
