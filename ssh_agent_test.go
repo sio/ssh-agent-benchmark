@@ -25,8 +25,8 @@ func BenchmarkSshAgent(b *testing.B) {
 		{"key_rsa4096", 256},
 		{"key_ed25519", 1024},
 		{"key_rsa4096", 1024},
-		{"key_ed25519", 16*1024},
-		{"key_rsa4096", 16*1024},
+		{"key_ed25519", 16 * 1024},
+		{"key_rsa4096", 16 * 1024},
 	}
 	socket := os.Getenv("SSH_AUTH_SOCK")
 	if socket == "" {
@@ -39,7 +39,7 @@ func BenchmarkSshAgent(b *testing.B) {
 	defer conn.Close()
 	sshAgent := agent.NewClient(conn)
 	for _, bm := range benchmarks {
-		b.Run(fmt.Sprintf("%s/%dbytes", bm.keyfile, bm.msgsize), func(b *testing.B) {
+		b.Run(fmt.Sprintf("%s/%db", bm.keyfile, bm.msgsize), func(b *testing.B) {
 			pubKeyRaw, err := os.ReadFile(bm.keyfile + ".pub")
 			if err != nil {
 				b.Fatalf("failed to read public key: %v", err)
@@ -48,20 +48,41 @@ func BenchmarkSshAgent(b *testing.B) {
 			if err != nil {
 				b.Fatalf("failed to parse public key: %v", err)
 			}
-			for i := 0; i < b.N; i++ {
-				msg := make([]byte, bm.msgsize)
-				n, err := rand.Read(msg)
-				if err != nil {
-					b.Fatalf("failed to generate random message: %v", err)
-				}
-				if n != len(msg) {
-					b.Fatalf("random generator returned %d bytes instead of %d", n, len(msg))
-				}
-				_, err = sshAgent.Sign(pubKey, msg)
-				if err != nil {
-					b.Fatalf("message signing failed: %v", err)
-				}
+			msg := make([]byte, bm.msgsize)
+			n, err := rand.Read(msg)
+			if err != nil {
+				b.Fatalf("failed to generate random message: %v", err)
+			}
+			if n != len(msg) {
+				b.Fatalf("random generator returned %d bytes instead of %d", n, len(msg))
+			}
+			for _, unique := range []bool{true, false} {
+				b.Run(repr(unique), func(b *testing.B) {
+					for i := 0; i < b.N; i++ {
+						if unique {
+							msg = make([]byte, bm.msgsize)
+							n, err := rand.Read(msg)
+							if err != nil {
+								b.Fatalf("failed to generate random message: %v", err)
+							}
+							if n != len(msg) {
+								b.Fatalf("random generator returned %d bytes instead of %d", n, len(msg))
+							}
+						}
+						_, err = sshAgent.Sign(pubKey, msg)
+						if err != nil {
+							b.Fatalf("message signing failed: %v", err)
+						}
+					}
+				})
 			}
 		})
 	}
+}
+
+func repr(unique bool) string {
+	if unique {
+		return "unique"
+	}
+	return "same"
 }
