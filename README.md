@@ -3,6 +3,10 @@
 This project uses Go benchmarking framework to measure performance of
 ssh-agent. Turns out it's pretty fast.
 
+See the [blog post] for more information.
+
+[blog post]: https://potyarkin.ml/posts/2023/ssh-agent-benchmark/
+
 
 ## Usage
 
