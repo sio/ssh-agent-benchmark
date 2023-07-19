@@ -25,6 +25,8 @@ func BenchmarkSshAgent(b *testing.B) {
 		{"key_rsa4096", 256},
 		{"key_ed25519", 1024},
 		{"key_rsa4096", 1024},
+		{"key_ed25519", 16*1024},
+		{"key_rsa4096", 16*1024},
 	}
 	socket := os.Getenv("SSH_AUTH_SOCK")
 	if socket == "" {
@@ -37,7 +39,7 @@ func BenchmarkSshAgent(b *testing.B) {
 	defer conn.Close()
 	sshAgent := agent.NewClient(conn)
 	for _, bm := range benchmarks {
-		b.Run(fmt.Sprintf("%s/%d bytes", bm.keyfile, bm.msgsize), func(b *testing.B) {
+		b.Run(fmt.Sprintf("%s/%dbytes", bm.keyfile, bm.msgsize), func(b *testing.B) {
 			pubKeyRaw, err := os.ReadFile(bm.keyfile + ".pub")
 			if err != nil {
 				b.Fatalf("failed to read public key: %v", err)
