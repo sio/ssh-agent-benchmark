@@ -8,4 +8,4 @@ bench: load-keys
 .PHONY: load-keys
 load-keys:
 	chmod go-rwx $(KEYS)
-	ssh-add -t 60 $(KEYS)
+	ssh-add -t 100 $(KEYS)
