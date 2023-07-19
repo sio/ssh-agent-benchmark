@@ -60,7 +60,6 @@ func BenchmarkSshAgent(b *testing.B) {
 				b.Run(repr(unique), func(b *testing.B) {
 					for i := 0; i < b.N; i++ {
 						if unique {
-							msg = make([]byte, bm.msgsize)
 							n, err := rand.Read(msg)
 							if err != nil {
 								b.Fatalf("failed to generate random message: %v", err)
