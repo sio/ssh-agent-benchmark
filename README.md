@@ -5,7 +5,7 @@ ssh-agent. Turns out it's pretty fast.
 
 See the [blog post] for more information.
 
-[blog post]: https://potyarkin.ml/posts/2023/ssh-agent-benchmark/
+[blog post]: https://potyarkin.com/posts/2023/ssh-agent-benchmark/
 
 
 ## Usage
