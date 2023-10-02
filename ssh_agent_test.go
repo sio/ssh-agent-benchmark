@@ -68,7 +68,7 @@ func BenchmarkSshAgent(b *testing.B) {
 								b.Fatalf("random generator returned %d bytes instead of %d", n, len(msg))
 							}
 						}
-						_, err = sshAgent.Sign(pubKey, msg)
+						_, err = sshAgent.Sign(pubKey, msg) // all allocations happen here (ed25519 = 31 allocs/op, rsa = 38 allocs/op)
 						if err != nil {
 							b.Fatalf("message signing failed: %v", err)
 						}

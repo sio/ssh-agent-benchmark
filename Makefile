@@ -3,7 +3,7 @@ GO?=go
 
 .PHONY: bench
 bench: load-keys
-	$(GO) test -bench=. -benchtime=5s
+	$(GO) test -bench=. -benchtime=5s -benchmem
 
 .PHONY: load-keys
 load-keys:
